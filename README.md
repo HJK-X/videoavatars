@@ -60,6 +60,13 @@ Additionally, we provide helper bash scripts for easier processing of our datase
 
 The scripts in `prepare_data` might help you to process your own data.
 
+usage:
+
+1. run openpose on data
+2. `python .\prepare_data\2djoints2hdf5.py data\keypoints keypoints.hdf5`
+3. create masks on data
+4. 
+
 ## Citation
 
 This repository contains code corresponding to:

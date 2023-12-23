@@ -2,15 +2,18 @@
 
 This repository contains code corresponding to the paper **Video based reconstruction of 3D people models**.
 
+updated 
+
 ## Installation
 
 Download and unpack the SMPL model from here: http://smpl.is.tue.mpg.de/.
 
 Download and unpack the SMPLify Code from here: http://smplify.is.tue.mpg.de/
 
+make sure CUDA is installed on your machine > 10.1
 
 ```
-git clone https://github.com/thmoa/videoavatars.git videoavatars
+git clone https://github.com/thmoa/videoavatars.git
 cd videoavatars/vendor
 mkdir smpl
 cd smpl
@@ -28,6 +31,15 @@ cp <path to your smplify installation>/code/lib/sphere_collisions.py .
 ln -s <path to smplify folder>/code/lib/capsule_body.py .
 ln -s <path to smplify folder>/code/lib/capsule_ch.py .
 ln -s <path to smplify folder>/code/lib/robustifiers.py .
+
+cd ..
+
+conda env create -f environment.yaml
+pip install --upgrade pip
+git clone https://github.com/polmorenoc/opendr.git
+cd opendr/opendr
+python ./setup.py install
+
 ```
 
 Change line 14 in `vendor/smplify/sphere_collisions.py` to

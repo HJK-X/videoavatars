@@ -3,7 +3,7 @@
 
 import chumpy as ch
 import numpy as np
-import cPickle as pkl
+import pickle as pkl
 import scipy.sparse as sp
 from chumpy.ch import Ch
 from vendor.smpl.posemapper import posemap, Rodrigues

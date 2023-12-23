@@ -1,6 +1,5 @@
 .idea/
 .DS_Store
-
+*.pkl
 *.pyc
-vendor/*
-!vendor/__init__.py
+*.npz

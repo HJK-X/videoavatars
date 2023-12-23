@@ -5,7 +5,7 @@ import h5py
 import argparse
 import numpy as np
 import chumpy as ch
-import cPickle as pkl
+import pickle as pkl
 
 from opendr.camera import ProjectPoints
 from opendr.renderer import BoundaryRenderer, ColoredRenderer

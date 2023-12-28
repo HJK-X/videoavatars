@@ -31,7 +31,7 @@ pose_dir = args.src_folder
 pose_files = sorted(glob(os.path.join(pose_dir, '*.json')))
 
 with h5py.File(out_file, 'w') as f:
-    poses_dset = f.create_dataset("keypoints", (len(pose_files), 54), 'f', chunks=True, compression="lzf")
+    poses_dset = f.create_dataset("keypoints", (len(pose_files), 75), 'f', chunks=True, compression="lzf")
 
     for i, pose_file in enumerate(tqdm(pose_files)):
         with open(pose_file) as fp:

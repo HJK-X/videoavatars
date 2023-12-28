@@ -228,13 +228,13 @@ def main(keypoint_file, masks_file, camera_file, out, model_file, prior_file, re
 
     # load data
     with open(model_file, 'rb') as fp:
-        model_data = pkl.load(fp)
+        model_data = pkl.load(fp, encoding='bytes')
 
     with open(camera_file, 'rb') as fp:
         camera_data = pkl.load(fp)
 
     with open(prior_file, 'rb') as fp:
-        prior_data = pkl.load(fp)
+        prior_data = pkl.load(fp, encoding='bytes')
 
     if 'basicModel_f' in model_file:
         regs = np.load('vendor/smplify/models/regressors_locked_normalized_female.npz')
@@ -350,7 +350,7 @@ if __name__ == '__main__':
         help="Out file path")
     parser.add_argument(
         '--model', '-m',
-        default='vendor/smpl/models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl',
+        default='vendor/smpl/models/basicmodel_m_lbs_10_207_0_v1.1.0.pkl',
         help='Path to SMPL model')
     parser.add_argument(
         '--prior', '-p',

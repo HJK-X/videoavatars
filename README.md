@@ -64,8 +64,10 @@ usage:
 
 1. run openpose on data
 2. `python .\prepare_data\2djoints2hdf5.py data\keypoints keypoints.hdf5`
-3. create masks on data
-4. 
+3. create masks on data (im using segment anything)
+4. `python .\prepare_data\masks2hdf5.py .\data\mask\ masks.hdf5`
+5. `python .\prepare_data\create_camera.py camera.pkl 1080 1920 -f 900.0 900.0`
+6. `python .\step1_pose.py .\keypoints.hdf5 .\masks.hdf5 .\camera.pkl step1`
 
 ## Citation
 

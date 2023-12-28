@@ -35,19 +35,19 @@ camera_data = {
 }
 
 if args.f is not None:
-    if len(args.f) is not 2:
+    if len(args.f) != 2:
         raise Exception('Focal length should be of shape (2,)')
 
     camera_data['camera_f'] = np.array(args.f)
 
 if args.c is not None:
-    if len(args.c) is not 2:
+    if len(args.c) != 2:
         raise Exception('Principal point should be of shape (2,)')
 
     camera_data['camera_c'] = np.array(args.c)
 
 if args.k is not None:
-    if len(args.k) is not 5:
+    if len(args.k) != 5:
         raise Exception('Distortion coefficients should be of shape (5,)')
 
     camera_data['camera_k'] = np.array(args.k)

@@ -178,7 +178,7 @@ def set_sphere_centers(capsule, floor=True):
 
     if n_spheres >= 1:
         step = capsule.length.r / (n_spheres + 1)
-        for i in xrange(n_spheres):
+        for i in range(n_spheres):
             centers.append(capsule.axis[0].r + (capsule.axis[
                 1].r - capsule.axis[0].r) * step * (i + 1) / capsule.length.r)
 
@@ -187,10 +187,10 @@ def set_sphere_centers(capsule, floor=True):
 
 
 def capsule_dist(capsule0, capsule1, alpha=.3, increase_hand=True):
-    range0 = range(capsule0.center_id,
-                   capsule0.center_id + len(capsule0.centers))
-    range1 = range(capsule1.center_id,
-                   capsule1.center_id + len(capsule1.centers))
+    range0 = list(range(capsule0.center_id,
+                   capsule0.center_id + len(capsule0.centers)))
+    range1 = list(range(capsule1.center_id,
+                   capsule1.center_id + len(capsule1.centers)))
     cnt0 = ch.concatenate([[cid] * len(range1) for cid in range0])
     cnt1 = ch.concatenate([range1] * len(range0))
     if increase_hand:
@@ -209,7 +209,7 @@ def capsule_dist(capsule0, capsule1, alpha=.3, increase_hand=True):
 def get_capsule_bweights(vs):
     # "blend" weights for the capsule. They are binary
     rows = np.arange(vs.shape[0])
-    cols = np.tile(np.hstack((range(10), range(12, 22))), (52, 1)).T.ravel()
+    cols = np.tile(np.hstack((list(range(10)), list(range(12, 22)))), (52, 1)).T.ravel()
     data = np.ones(vs.shape[0])
     caps_weights = np.asarray(
         sp.csc_matrix(
@@ -220,7 +220,7 @@ def get_capsule_bweights(vs):
 def get_sphere_bweights(sph_vs, capsules):
     rows = np.arange(sph_vs.shape[0])
     cols = []
-    for cps, w in zip(capsules, range(10) + range(12, 22)):
+    for cps, w in zip(capsules, list(range(10)) + list(range(12, 22))):
         cols.append([w] * len(cps.centers))
     cols = np.hstack(cols)
     data = np.ones(sph_vs.shape[0])

@@ -7,6 +7,7 @@ updated
 ## Installation
 
 Download and unpack the SMPL model from here: http://smpl.is.tue.mpg.de/.
+also SMPLX https://smpl-x.is.tue.mpg.de/    and model correspondences
 
 Download and unpack the SMPLify Code from here: http://smplify.is.tue.mpg.de/
 
@@ -20,6 +21,9 @@ cd smpl
 ln -s <path to smpl folder>/models .
 ln -s <path to smpl folder>/smpl_webuser/*.py .
 cd ..
+
+mkdir smplx
+ln -s <path to smplx folder>/models/smplx .
 
 mkdir smplify
 cd smplify
@@ -40,6 +44,7 @@ git clone https://github.com/polmorenoc/opendr.git
 cd opendr/opendr
 python ./setup.py install
 
+cd ../..
 ```
 
 Change line 14 in `vendor/smplify/sphere_collisions.py` to
@@ -62,7 +67,7 @@ The scripts in `prepare_data` might help you to process your own data.
 
 usage:
 
-1. run openpose on data
+1. run openpose on data   `.\bin\OpenPoseDemo.exe --image_dir .\sasmit_images\ --write_json .\keypoints1 --display 0 --render_pose 0 --model_pose COCO`
 2. `python .\prepare_data\2djoints2hdf5.py data\keypoints keypoints.hdf5`
 3. create masks on data (im using segment anything)
 4. `python .\prepare_data\masks2hdf5.py .\data\mask\ masks.hdf5`

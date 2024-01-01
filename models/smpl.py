@@ -43,13 +43,7 @@ class Smpl(Ch):
             else:
                 dd = self.model
 
-            old = dd.copy().keys()
-            for a in old:
-                dd[a.decode('ascii')] = dd[a]
-            
-            for a in old:
-                del dd[a]
-
+                
             backwards_compatibility_replacements(dd)
 
             for s in ['posedirs', 'shapedirs']:
@@ -65,7 +59,6 @@ class Smpl(Ch):
             if 'J_regressor_prior' in dd:
                 self.J_regressor_prior = dd['J_regressor_prior']
             if sp.issparse(self.J_regressor):
-                print(self.J_regressor.nnz)
                 self.J_regressor = self.J_regressor.toarray()
             self.bs_type = dd['bs_type']
             self.weights = dd['weights']

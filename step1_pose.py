@@ -112,7 +112,7 @@ def init(frames, body_height, b2m, viz_rn):
 
         for i, f in enumerate(frames):
             if np.sum(f.keypoints[[0, 2, 5, 8, 11], 2]) > 3.:
-                x0.extend([f.smpl.pose[range(21) + range(27, 30) + range(36, 60)], f.smpl.trans])
+                x0.extend([f.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 60))], f.smpl.trans])
                 E['pose_{}'.format(i)] = f.pose_obj
                 E['prior_{}'.format(i)] = f.pose_prior_obj * w_prior
 
@@ -163,9 +163,9 @@ def reinit_frame(frame, null_pose, nohands, viz_rn):
         x0 = [frame.smpl.trans]
 
         if nohands:
-            x0.append(frame.smpl.pose[range(21) + range(27, 30) + range(36, 60)])
+            x0.append(frame.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 60))])
         else:
-            x0.append(frame.smpl.pose[range(21) + range(27, 30) + range(36, 72)])
+            x0.append(frame.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 72))])
 
         ch.minimize(
             E,
@@ -208,9 +208,9 @@ def fit_pose(frame, last_smpl, frustum, nohands, viz_rn):
         E['last_trans'] = GMOf(frame.smpl.trans - last_smpl.trans, 0.05) * 50.
 
     if nohands:
-        x0 = [frame.smpl.pose[range(21) + range(27, 30) + range(36, 60)], frame.smpl.trans]
+        x0 = [frame.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 60))], frame.smpl.trans]
     else:
-        x0 = [frame.smpl.pose[range(21) + range(27, 30) + range(36, 72)], frame.smpl.trans]
+        x0 = [frame.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 72))], frame.smpl.trans]
 
     ch.minimize(
         E,
@@ -228,13 +228,13 @@ def main(keypoint_file, masks_file, camera_file, out, model_file, prior_file, re
 
     # load data
     with open(model_file, 'rb') as fp:
-        model_data = pkl.load(fp, encoding='bytes')
+        model_data = pkl.load(fp, encoding='latin1')
 
     with open(camera_file, 'rb') as fp:
         camera_data = pkl.load(fp)
 
     with open(prior_file, 'rb') as fp:
-        prior_data = pkl.load(fp, encoding='bytes')
+        prior_data = pkl.load(fp, encoding='latin1')
 
     if 'basicModel_f' in model_file:
         regs = np.load('vendor/smplify/models/regressors_locked_normalized_female.npz')
@@ -306,7 +306,7 @@ def main(keypoint_file, masks_file, camera_file, out, model_file, prior_file, re
         trans_dset = fp.create_dataset("trans", (num_frames, 3), 'f', chunks=True, compression="lzf")
         betas_dset = fp.create_dataset("betas", (10,), 'f', chunks=True, compression="lzf")
 
-        for i in xrange(num_frames):
+        for i in range(num_frames):
             if i == 0:
                 current_frame = base_frame
             else:
@@ -350,7 +350,7 @@ if __name__ == '__main__':
         help="Out file path")
     parser.add_argument(
         '--model', '-m',
-        default='vendor/smpl/models/basicmodel_m_lbs_10_207_0_v1.1.0.pkl',
+        default='vendor/smpl/models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl',
         help='Path to SMPL model')
     parser.add_argument(
         '--prior', '-p',
@@ -368,7 +368,7 @@ if __name__ == '__main__':
         help="Exclude hands from optimization")
     parser.add_argument(
         '--display', '-d',
-        action='store_true',
+        action='store_false',
         help="Enable visualization")
 
     args = parser.parse_args()

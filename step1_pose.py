@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import chumpy as ch
 import pickle as pkl
+import os
 
 from opendr.camera import ProjectPoints
 from opendr.lighting import LambertianPointLight
@@ -22,6 +23,7 @@ from models.bodyparts import faces_no_hands
 from vendor.smplify.sphere_collisions import SphereCollisions
 from vendor.smplify.robustifiers import GMOf
 
+skip = True
 
 def get_cb(viz_rn, f):
     if viz_rn is not None:
@@ -83,15 +85,24 @@ def init(frames, body_height, b2m, viz_rn):
                 E_init['betas'] = betas
                 x0.append(betas)
 
-            ch.minimize(
-                E_init,
-                x0,
-                method='dogleg',
-                options={
-                    'e_3': .01,
-                },
-                callback=get_cb(viz_rn, f)
-            )
+            if skip:
+                with open('pkl/p1a'+str(i)+'.pkl', 'rb') as file:
+                    x1 = pkl.load(file)
+                    for i in range(len(x0)):
+                        x0[i] = x1[i][:]
+            else:
+                ch.minimize(
+                    E_init,
+                    x0,
+                    method='dogleg',
+                    options={
+                        'e_3': .01,
+                    },
+                    callback=get_cb(viz_rn, f)
+                )
+
+                with open('pkl/p1a'+str(i)+'.pkl', 'wb') as file:
+                    pkl.dump(x0, file)
 
     weights = zip(
         [5., 4.5, 4.],
@@ -116,15 +127,26 @@ def init(frames, body_height, b2m, viz_rn):
                 E['pose_{}'.format(i)] = f.pose_obj
                 E['prior_{}'.format(i)] = f.pose_prior_obj * w_prior
 
-        ch.minimize(
-            E,
-            x0,
-            method='dogleg',
-            options={
-                'e_3': .01,
-            },
-            callback=get_cb(viz_rn, frames[0])
-        )
+        
+
+        if skip:
+            with open('pkl/p2b'+str(int(w_prior))+'.pkl', 'rb') as file:
+                x1 = pkl.load(file)
+                for i in range(len(x0)):
+                    x0[i] = x1[i][:]
+        else:
+            ch.minimize(
+                E,
+                x0,
+                method='dogleg',
+                options={
+                    'e_3': .01,
+                },
+                callback=get_cb(viz_rn, frames[0])
+            )
+
+            with open('pkl/p2b'+str(int(w_prior))+'.pkl', 'wb') as file:
+                pkl.dump(x0, file)
 
 
 def reinit_frame(frame, null_pose, nohands, viz_rn):
@@ -193,7 +215,13 @@ def fit_pose(frame, last_smpl, frustum, nohands, viz_rn):
     dist_o = cv2.distanceTransform(255 - np.uint8(frame.mask * 255), dst_type, 5)
     dist_o[dist_o > 50] = 50
 
-    rn_m = ColoredRenderer(camera=frame.camera, v=frame.smpl, f=faces, vc=np.ones_like(frame.smpl), frustum=frustum,
+
+    rn_m = ColoredRenderer(
+        camera=frame.camera, 
+    v=frame.smpl, 
+    f=faces, 
+    vc=np.ones_like(frame.smpl), 
+    frustum=frustum,
                            bgcolor=0, num_channels=1)
 
     E = {
@@ -368,7 +396,7 @@ if __name__ == '__main__':
         help="Exclude hands from optimization")
     parser.add_argument(
         '--display', '-d',
-        action='store_false',
+        action='store_true',
         help="Enable visualization")
 
     args = parser.parse_args()

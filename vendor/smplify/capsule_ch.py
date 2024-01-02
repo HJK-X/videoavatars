@@ -12,7 +12,7 @@ the interpenetration error term in sphere_collisions.py.
 
 import numpy as np
 import chumpy as ch
-from opendr.geometry import Rodrigues
+from util.geometry import Rodrigues
 
 # faces for the capsules. Useful only for visualization purposes
 cap_f = np.asarray(

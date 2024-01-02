@@ -85,7 +85,7 @@ collisions = [
 
 
 def get_capsules(model, wrt_betas=None, length_regs=None, rad_regs=None):
-    from opendr.geometry import Rodrigues
+    from util.geometry import Rodrigues
     if length_regs is not None:
         n_shape_dofs = length_regs.shape[0] - 1
     else:

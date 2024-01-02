@@ -6,7 +6,7 @@ import numpy as np
 import chumpy as ch
 from chumpy import Ch, depends_on
 from chumpy.utils import col
-from opendr.geometry import Rodrigues
+from util.geometry import Rodrigues
 
 
 class OrthoProjectPoints(Ch):

@@ -23,7 +23,7 @@ from models.bodyparts import faces_no_hands
 from vendor.smplify.sphere_collisions import SphereCollisions
 from vendor.smplify.robustifiers import GMOf
 
-skip = True
+skip = False
 
 def get_cb(viz_rn, f):
     if viz_rn is not None:
@@ -80,6 +80,8 @@ def init(frames, body_height, b2m, viz_rn):
 
             x0 = [f.smpl.trans, f.smpl.pose[:3]]
 
+            # print("asdfasdlfjalsdf", x0[1].shape, x0[0].shape)
+
             if E_height is not None and i == 0:
                 E_init['height'] = E_height
                 E_init['betas'] = betas
@@ -88,8 +90,9 @@ def init(frames, body_height, b2m, viz_rn):
             if skip:
                 with open('pkl/p1a'+str(i)+'.pkl', 'rb') as file:
                     x1 = pkl.load(file)
-                    for i in range(len(x0)):
-                        x0[i] = x1[i][:]
+                    f.smpl.trans = x1[0]
+                    f.smpl.pose[:3] = x1[1]
+
             else:
                 ch.minimize(
                     E_init,
@@ -132,8 +135,14 @@ def init(frames, body_height, b2m, viz_rn):
         if skip:
             with open('pkl/p2b'+str(int(w_prior))+'.pkl', 'rb') as file:
                 x1 = pkl.load(file)
-                for i in range(len(x0)):
-                    x0[i] = x1[i][:]
+                betas = x1[0]
+                
+                c = 1
+                for i, f in enumerate(frames):
+                    if np.sum(f.keypoints[[0, 2, 5, 8, 11], 2]) > 3.:
+                        f.smpl.pose[list(range(21)) + list(range(27, 30)) + list(range(36, 60))] = x1[c]
+                        f.smpl.trans = x1[c + 1]
+                        c += 2
         else:
             ch.minimize(
                 E,

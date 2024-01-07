@@ -94,6 +94,12 @@ def init(frames, body_height, b2m, viz_rn):
                     f.smpl.pose[:3] = x1[1]
 
             else:
+                # print(E_init['init_pose_{}'.format(i)])
+                # print(list(x0))
+                print(np.sum(np.square(f.pose_obj[[0, 2, 5, 8, 11]])))
+                
+                print(f.smpl.trans)
+                print(f.smpl.pose[:3])
                 ch.minimize(
                     E_init,
                     x0,
@@ -103,6 +109,16 @@ def init(frames, body_height, b2m, viz_rn):
                     },
                     callback=get_cb(viz_rn, f)
                 )
+                print(E_init['init_pose_{}'.format(i)])
+                print(np.sum(np.square(f.pose_obj[[0, 2, 5, 8, 11]])))
+                # print(list(x0))
+                # print(sum(E_init['init_pose_{}'.format(i)]))
+                print(i)
+                print(f.smpl.trans)
+                print(f.smpl.pose[:3])
+                print(f.keypoints)
+                print(f.smpl)
+
 
                 with open('pkl/p1a'+str(i)+'.pkl', 'wb') as file:
                     pkl.dump(x0, file)
@@ -289,6 +305,7 @@ def main(keypoint_file, masks_file, camera_file, out, model_file, prior_file, re
     base_smpl.trans[:] = np.array([0, 0, 3])
     base_smpl.pose[0] = np.pi
     base_smpl.pose[3:] = prior_data['mean']
+    # print(base_smpl.pose.shape, prior_data['mean'].shape)
 
     camera = ProjectPoints(t=np.zeros(3), rt=np.zeros(3), c=camera_data['camera_c'] * resize,
                            f=camera_data['camera_f'] * resize, k=camera_data['camera_k'], v=base_smpl)
@@ -312,14 +329,19 @@ def main(keypoint_file, masks_file, camera_file, out, model_file, prior_file, re
 
         f.keypoints = np.array(keypoints[i]).reshape(-1, 3) * np.array([resize, resize, 1])
         f.J = joints_coco(f.smpl)
+        print("test", f.smpl.pose, f.smpl.betas, f.smpl.trans)
+        print("J", f.J.shape)
         f.J_proj = ProjectPoints(v=f.J, t=camera.t, rt=camera.rt, c=camera.c, f=camera.f, k=camera.k)
+        print(camera.c)
+        print("J_proj", f.J_proj.shape)
         f.mask = cv2.resize(np.array(masks[i], dtype=np.float32), (0, 0),
                             fx=resize, fy=resize, interpolation=cv2.INTER_NEAREST)
-
+        
         f.collision_obj = collision_obj(f.smpl, regs)
         f.pose_prior_obj = pose_prior_obj(f.smpl, prior_data)
         f.pose_obj = (f.J_proj - f.keypoints[:, :2]) * f.keypoints[:, 2].reshape(-1, 1)
-
+        import sys
+        sys.exit()
         return f
 
     base_frame = create_frame(0, base_smpl, copy=False)
